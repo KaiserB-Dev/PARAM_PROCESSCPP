@@ -20,9 +20,11 @@
         <img src="./resources_readme/cm1.png"></img>
         Despues se le da al boton configure y abrira una ventana la cual se debera de configurar así, despues se le da a next.
         <img src="./resources_readme/cm2.png"></img>
-        Pedira los compiladores a usar. Se debera meter la siguiente ruta para c y c++:  {instalation_path}/mingw-w64/mingw64/bin/x86_64-w64-mingw32-gcc.exe <-- para C y {instalation_path}/mingw-w64/mingw64/bin/x86_64-w64-mingw32-g++.exe <-- para c++
+        Pedira los compiladores a usar. Se debera meter la siguiente ruta para c y c++:  {instalation_path}/mingw-w64/mingw64/bin/x86_64-w64-mingw32-gcc.exe <-- para C y {instalation_path}/mingw-w64/mingw64/bin/x86_64-w64-mingw32-g++.exe <-- para c++. Despues se le da finalizar
         <img src="./resources_readme/cm3.png"></img>
+        Una vez finalizado se debera de deshabilitar el OPENCV_ENABLE_ALLOCATOR_STATS
+        <img src="./resources_readme/cm5.png"></img>
+
 
     </body> 
-
 </html>
