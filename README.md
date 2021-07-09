@@ -60,7 +60,7 @@
         El resultado debera de ser similar al de la imagen. </br>
         Despues de que termine la compilación se debe de ejecutar el comando <i>mingw32-make.exe install</i> para instalar la libreria.
         <h2>  Configuración del path  </h2>
-        Abra las variables de entorno del sistema y configure en la variable path la ruta {extract_directory}/opencv/build.
+        Abra las variables de entorno del sistema y configure en la variable path la ruta {extract_directory}/opencv/build/bin.
         <img src="./resources_readme/m2.png"></img> 
     </body> 
 </html>
