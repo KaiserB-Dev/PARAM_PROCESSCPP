@@ -45,7 +45,6 @@ int main(int argc, char** argv){
 
     //std::string strCoords;
     std::vector<std::vector<cv::Point>> cnts; //[x,y]
-    int thresh_canny = 100; 
 
     cv::CommandLineParser parser( argc, argv, "{@input | stuff.wmv | input video}" );
 
