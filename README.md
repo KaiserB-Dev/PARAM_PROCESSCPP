@@ -25,10 +25,14 @@
             </li>
         </ul>
         <h1>DESCRIPCIÓN</h1>
+        Este proyecto de la rama de visión por computadora es capaz de detectar paramecium tetraurelia y obtener su centroide y angulo para poder trazar su trayectoria y calcular su torque y velocidad de nado. Su funcionamiento es a base de operaciones morfologicas en las imagenes impuestas por el usuario.
         <h2>  Dependencias  </h2>
             <ul>
                 <li>Opencv 4.5.0</li>
             </ul>
+        <h2>  Compilación y ejecución del programa  </h2>
+        Compilación: <i>./compile.bat</i> </br>
+        Ejecución: <i>./run {@input [video.wmv]}</i>
         <h1>COMO COMPILAR OPENCV</h1>
         <h2>  Prerrequisitos  </h2>
         <img src="./resources_readme/req.png"></img>
