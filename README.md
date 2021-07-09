@@ -11,7 +11,7 @@
         <h1>COMO COMPILAR OPENCV</h1>
         <h2>  Prerequisitos  </h2>
         <img src="./resources_readme/req.png"></img>
-        <p>Descarga de <a href="https://www.dropbox.com/sh/oqlm559dbgpkjnh/AADK-Qc6eJYXH9d-indPd0nBa?dl=0" target="_blank"> aquí. </a>
+        <p>Descarga de <a href="https://www.dropbox.com/sh/oqlm559dbgpkjnh/AADK-Qc6eJYXH9d-indPd0nBa?dl=0" target="_blank"> aquí. </br></a>
         Una vez tenemos todo descargados procedemos a unstalar el cmake y el mingw, despues se ejecuta el opencv 4.5.0 y se extrae en donde se quiera</p>
         <img src="./resources_readme/op.png"></img>
     </body>
