@@ -8,6 +8,7 @@
         <h1>COMO COMPILAR OPENCV</h1>
         <h2>  Prerequisitos  </h2>
         <img src="./resources_readme/req.png"></img>
+        Descarga de <a href="https://www.dropbox.com/sh/oqlm559dbgpkjnh/AADK-Qc6eJYXH9d-indPd0nBa?dl=0"> aquí </a>
     </body>
 
 </html>
