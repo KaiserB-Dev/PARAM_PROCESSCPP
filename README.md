@@ -18,6 +18,8 @@
         <img src="./resources_readme/dir.png"></img>
         Despues se abre el cmake previamente instalado y de debera configurar primero de la siguiente manera.
         <img src="./resources_readme/cm1.png"></img>
+        Despues se le da al boton configure y abrira una ventana la cual se debera de configurar así, despues le damos siguiente.
+        <img src="./resources_readme/cm2.png"></img>
     </body>
 
 </html>
