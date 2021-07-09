@@ -26,8 +26,7 @@
         </ul>
         <h1>DESCRIPCIÓN</h1>
         <h2>  Dependencias  </h2>
-
-
+            [X]Opencv 4.5.0
         <h1>COMO COMPILAR OPENCV</h1>
         <h2>  Prerrequisitos  </h2>
         <img src="./resources_readme/req.png"></img>
