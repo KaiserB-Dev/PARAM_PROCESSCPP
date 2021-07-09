@@ -4,6 +4,9 @@
 
 +Para su compilación y ejecución requiere tener instalado opencv 4.50.
 <html>
+    <head>
+        <meta charset="UTF-8">
+    </head>
     <body>
         <h1>COMO COMPILAR OPENCV</h1>
         <h2>  Prerequisitos  </h2>
