@@ -27,6 +27,7 @@
         </ul>
         <h1>DESCRIPCIÓN</h1>
         Este proyecto de la rama de visión por computadora es capaz de detectar paramecium tetraurelia y obtener su centroide y angulo para poder trazar su trayectoria y calcular su torque y velocidad de nado. Su funcionamiento es a base de operaciones morfologicas en las imagenes impuestas por el usuario.
+        </br>
         <img src="./resources_readme/2021-07-06 21-34-52.gif"></img>
         <h2>  Dependencias  </h2>
             <ul>
