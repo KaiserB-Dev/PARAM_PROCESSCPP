@@ -27,8 +27,12 @@
         <img src="./resources_readme/cm5.png"></img>
         Despues se le da a configurar y cuando termine el proceso se le data a generar. Una vez generado el archivo make se puede cerrar cmake-gui.</br>
         <h2>  Compilación e instalación  </h2>
-        Para la compilación deberemos abrir una terminal en la carpeta {extract_directory}/opencv/build y ahi ejecutaremos el comando <i>mingw32-make.exe</i> y comenzara a compilar todo lo necesario para funcionar. Esto puede tardar varios minutos dependiendo el procesador que se cuente.
+        Para la compilación se debe abrir una terminal en la carpeta {extract_directory}/opencv/build y ahi ejecutar el comando <i>mingw32-make.exe</i> y comenzara a compilar todo lo necesario para funcionar. Esto puede tardar varios minutos dependiendo el procesador que se cuente.
         <img src="./resources_readme/m1.png"></img> 
-        El resultado debera de ser similar al de la imagen.
+        El resultado debera de ser similar al de la imagen. </br>
+        Despues de que termine la compilación se debe de ejutar el comando <i>mingw32-make.exe install</i> para instalar la libreria.
+        <h2>  Configuración del path  </h2>
+        Abra las variables de entorno del sistema y configure en la variable path la ruta {extract_directory}/opencv/build.
+        <img src="./resources_readme/m2.png"></img> 
     </body> 
 </html>
