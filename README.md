@@ -13,6 +13,7 @@
             <li><a href="#descripción">Descripción</a>
                 <ul>
                     <li><a href="#--dependencias--">Dependencias</a></li>
+                    <li><a href="#--compilación-y-ejecución-del-programa--">Compilación y ejecución del programa</a></li>
                 </ul>
             </li>
             <li> <a href="#como-compilar-opencv">Como compilar opencv</a>
