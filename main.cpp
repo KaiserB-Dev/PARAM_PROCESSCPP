@@ -1,4 +1,3 @@
-/*compile:  g++ -o prueba prueba.cpp -IC:\opencv\build\include -LC:\opencv\build\lib -llibopencv_core450 -llibopencv_highgui450 -llibopencv_calib3d450 -llibopencv_core450 -llibopencv_dnn450 -llibopencv_features2d450 -llibopencv_flann450 -llibopencv_gapi450 -llibopencv_highgui450 -llibopencv_imgcodecs450 -llibopencv_imgproc450 -llibopencv_ml450 -llibopencv_objdetect450 -llibopencv_photo450 -llibopencv_stitching450 -llibopencv_video450 -llibopencv_videoio450*/
 
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -46,7 +45,7 @@ int main(int argc, char** argv){
     //std::string strCoords;
     std::vector<std::vector<cv::Point>> cnts; //[x,y]
 
-    cv::CommandLineParser parser( argc, argv, "{@input | stuff.wmv | input video}" );
+    cv::CommandLineParser parser( argc, argv, "{@input | stuff.wmv | input video}" ); //Parser para obtener y leer el video desde los argumentos de ejecución del programa
 
     video = cv::VideoCapture(cv::samples::findFile(parser.get<std::string>( "@input" ) ));
     int total_frames = video.get(cv::CAP_PROP_FRAME_COUNT);
