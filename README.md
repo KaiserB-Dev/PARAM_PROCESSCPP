@@ -10,7 +10,14 @@
     <body>
          <h1>INDICE</h1>
         <ul>
-            <li> <a href="#como-compilar-opencv">Como compilar opencv </li>
+            <li> <a href="#como-compilar-opencv">Como compilar opencv</a>
+                <ul>
+                    <li><a href="#--prerrequisitos--">Prerrequisitos</a></li>
+                    <li><a href="#--configuración-del-make--">Configuración del cmake</a></li>
+                    <li><a href="#--compilación-e-instalación--">Compilación e instalación</a></li>
+                    <li><a href="#--configuración-del-path--">Configuración del path</a></li>
+                </ul>
+            </li>
         </ul>
         <h1>COMO COMPILAR OPENCV</h1>
         <h2>  Prerrequisitos  </h2>
