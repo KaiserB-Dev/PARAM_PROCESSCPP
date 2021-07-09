@@ -12,7 +12,7 @@
         <ul>
             <li><a href="#descripción">Descripción</a>
                 <ul>
-                    <li><a href="#--prerrequisitos--">Prerrequisitos</a></li>
+                    <li><a href="#--dependencias--">Dependencias</a></li>
                 </ul>
             </li>
             <li> <a href="#como-compilar-opencv">Como compilar opencv</a>
@@ -25,6 +25,9 @@
             </li>
         </ul>
         <h1>DESCRIPCIÓN</h1>
+        <h2>  Dependencias  </h2>
+
+
         <h1>COMO COMPILAR OPENCV</h1>
         <h2>  Prerrequisitos  </h2>
         <img src="./resources_readme/req.png"></img>
