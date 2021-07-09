@@ -8,6 +8,9 @@
         <meta charset="UTF-8">
     </head>
     <body>
+        <ul>
+            <li> PRUEBA </li>
+        </ul>
         <h1>COMO COMPILAR OPENCV</h1>
         <h2>  Prerrequisitos  </h2>
         <img src="./resources_readme/req.png"></img>
