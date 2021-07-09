@@ -8,8 +8,9 @@
         <meta charset="UTF-8">
     </head>
     <body>
+         <h1>INDICE</h1>
         <ul>
-            <li> PRUEBA </li>
+            <li> <a href="#como-compilar-opencv">Como compilar opencv </li>
         </ul>
         <h1>COMO COMPILAR OPENCV</h1>
         <h2>  Prerrequisitos  </h2>
