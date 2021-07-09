@@ -18,8 +18,11 @@
         <img src="./resources_readme/dir.png"></img>
         Despues se abre el cmake previamente instalado y de debera configurar primero de la siguiente manera.
         <img src="./resources_readme/cm1.png"></img>
-        Despues se le da al boton configure y abrira una ventana la cual se debera de configurar así, despues le damos siguiente.
+        Despues se le da al boton configure y abrira una ventana la cual se debera de configurar así, despues se le da a next.
         <img src="./resources_readme/cm2.png"></img>
-    </body>
+        Pedira los compiladores a usar. Se debera meter la siguiente ruta para c y c++:  {instalation_path}/mingw-w64/mingw64/bin/x86_64-w64-mingw32-gcc.exe <-- para C y {instalation_path}/mingw-w64/mingw64/bin/x86_64-w64-mingw32-g++.exe <-- para c++
+        <img src="./resources_readme/cm3.png"></img>
+
+    </body> 
 
 </html>
