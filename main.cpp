@@ -122,9 +122,9 @@ int main(int argc, char** argv){
             std::cout<<minEllipse[i].angle<<std::endl;*/
 
             
-            x<<minEllipse[i].center.x<<",0";
-            y<<minEllipse[i].center.y<<",0";
-            angle<<Erad<<",0";
+            x<<minEllipse[i].center.x<<",";
+            y<<minEllipse[i].center.y<<",";
+            angle<<Erad<<",";
 
         }
 
