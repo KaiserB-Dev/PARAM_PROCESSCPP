@@ -10,6 +10,7 @@
 #include <cmath>
 #include <fstream>
 #include <ctime>
+#include <deque> 
 #define M_PI 3.14159265358979323846
 /*
 #include "MatlabEngine.hpp" 
@@ -32,6 +33,9 @@ int main(int argc, char** argv){
     cv::Mat frame, frameGray, NormalizeFrame, thFrame, DilFrame, cannyFrame; //Definiendo matrices vacias
     cv::Mat kernel;
     kernel.ones(cv::Size(10,10), 8);
+    std::ofstream x("./data_files/x.csv");
+    std::ofstream y("./data_files/y.csv");
+    std::ofstream angle("./data_files/angle.csv");
 
     //std::cout<<start<<std::endl;
 
@@ -44,6 +48,8 @@ int main(int argc, char** argv){
 
     //std::string strCoords;
     std::vector<std::vector<cv::Point>> cnts; //[x,y]
+    std::vector<cv::Point> points_center_prev;
+    std::deque<std::vector<cv::Point>> centers;
 
     cv::CommandLineParser parser( argc, argv, "{@input | stuff.wmv | input video}" ); //Parser para obtener y leer el video desde los argumentos de ejecución del programa
 
@@ -88,10 +94,6 @@ int main(int argc, char** argv){
                 minEllipse[i] = cv::fitEllipse(cnts[i]); //Inscribe la elipse en el rectangulo
             }
         }
-        
-        /*std::ofstream x("./data_files/x.csv");
-        std::ofstream y("./data_files/y.csv");
-        std::ofstream angle("./data_files/angle.csv");*/
         cv::putText(frame, cv::format("Frame: %d/%d", count+1, total_frames), {frame.rows+25, 25}, 1, 2, cv::Scalar(100,0,255),3,8); //Muestra los frames totales y el numero de frame en el que va el video
         cv::putText(frame, cv::format("FPS: %d", fps), {frame.rows+25, 50}, 1, 2, cv::Scalar(100,0,255),3,8); //Muestra los frames por segundo (FPS)
         
@@ -104,6 +106,12 @@ int main(int argc, char** argv){
             cv::drawMarker(frame, minEllipse[i].center, cv::Scalar(0,0,255), 0,10); // Pinta una cruz en el centro del paramecio
             cv::putText(frame, cv::format("([%.2f, %.2f], %.2frad)",minEllipse[i].center.x,minEllipse[i].center.y, Erad) ,
                         minEllipse[i].center, 1 ,1.3,cv::Scalar(255,255,100),2, cv::LINE_AA); // Pinta las coordenadas (x,y) y el angulo del paramecio
+            
+            
+            //std::cout<<"CENTROS EN EL "<<count<<" FRAME: "<<minEllipse[i].center<<std::endl;
+            
+            //cv::line(frame, centers[0], centers[1], cv::Scalar(100,200,255), 10, cv::LINE_8, 0);
+
             /*
            //std::cout<<minEllipse[i].center;
             std::cout<<"PUNTOS DE CONTORNO:"<<std::endl;
@@ -114,11 +122,13 @@ int main(int argc, char** argv){
             std::cout<<minEllipse[i].angle<<std::endl;*/
 
             
-           /*x<<minEllipse[i].center.x<<",";
-            y<<minEllipse[i].center.y<<",";
-            angle<<Erad<<",";*/
+            x<<minEllipse[i].center.x<<",0";
+            y<<minEllipse[i].center.y<<",0";
+            angle<<Erad<<",0";
 
         }
+
+
         /*for(int i = 0; i<frame.rows; ++i){
             uchar* rowsFrame = frame.ptr<uchar>(i);
             for(int j = 0; i<frame.cols; ++j){
@@ -137,9 +147,11 @@ int main(int argc, char** argv){
 
         if(cv::waitKey(1) == 27){ //condicion de paro del video, si se aprieta la tecla esc para el video
             break;
-        } 
+        }
+        x<<"\n";
+        y<<"\n";
+        angle<<"\n"; 
         ++count; //contador de frames
-
     }
     video.release(); //cierra el video
     cv::destroyAllWindows(); //destruye todas las ventanas creadas
