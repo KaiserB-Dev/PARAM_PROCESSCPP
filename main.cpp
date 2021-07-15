@@ -25,7 +25,6 @@ double degr_rad(double degr){
 
     return rad;
 }
-
 int main(int argc, char** argv){
 
     std::clock_t start = std::clock();
@@ -49,7 +48,10 @@ int main(int argc, char** argv){
     //std::string strCoords;
     std::vector<std::vector<cv::Point>> cnts; //[x,y]
     std::vector<cv::Point> points_center_prev;
-    std::deque<std::vector<cv::Point>> centers;
+   
+    std::deque<cv::Point> centersArr1;
+    std::deque<cv::Point> centersArr2;
+
 
     cv::CommandLineParser parser( argc, argv, "{@input | stuff.wmv | input video}" ); //Parser para obtener y leer el video desde los argumentos de ejecución del programa
 
@@ -68,7 +70,7 @@ int main(int argc, char** argv){
     int count = 0;
     while(true){
         video.read(frame);
-        if(frame.empty()) break;    
+        if(frame.empty()) break;   
 
         //preprocessing part
         cv::cvtColor(frame, frameGray, cv::COLOR_BGR2GRAY); //Converción de canal BGR a GRAY
@@ -78,9 +80,10 @@ int main(int argc, char** argv){
         //MORPH_ELLIPSE es un elemento estructural eliptico el cual esta inscrito en un rectangulo[x,y,width,heigth].
         cv::erode(DilFrame, DilFrame, kernel, cv::Point(-1,-1), 2, cv::BORDER_DEFAULT, cv::morphologyDefaultBorderValue()); //Esta parte es la eroción de la imagen previamente dilatada. lo hace con una kernel de unos;
         //El punto (-1,-1) indica que el punto de ancla de la eroción esta en el centro de cada elemento y este copia el borde original {PENDIENTE cv::morphologyDefaultBorderValue()}
-        cv::morphologyEx(DilFrame, DilFrame, cv::MORPH_OPEN, cv::getStructuringElement(cv::MORPH_ELLIPSE,(cv::Size(10,10)))); //Erosiona la imagen y luego dilata la imagen erosionada
+        cv::morphologyEx(DilFrame, DilFrame, cv::MORPH_OPEN, cv::getStructuringElement(cv::MORPH_ELLIPSE,(cv::Size(10,10)))); //Dilata la imagen y luego erosiona la imagen dilatada
+        cv::morphologyEx(DilFrame, DilFrame, cv::MORPH_CLOSE, cv::getStructuringElement(cv::MORPH_CROSS,(cv::Size(3,3))));
         //fin preprocessing
-
+        
         //contornos
         cv::Canny(DilFrame, cannyFrame, 80, 200); //Encuentra los bordes de una imagen por medio del algoritmo canny
         cv::findContours(cannyFrame, cnts,cv::RETR_TREE, cv::CHAIN_APPROX_NONE);  //En base a la imagen procesada con canny este busca los puntos de los bordes y los almacena en un vector de vectores de puntos
@@ -96,35 +99,56 @@ int main(int argc, char** argv){
         }
         cv::putText(frame, cv::format("Frame: %d/%d", count+1, total_frames), {frame.rows+25, 25}, 1, 2, cv::Scalar(100,0,255),3,8); //Muestra los frames totales y el numero de frame en el que va el video
         cv::putText(frame, cv::format("FPS: %d", fps), {frame.rows+25, 50}, 1, 2, cv::Scalar(100,0,255),3,8); //Muestra los frames por segundo (FPS)
-        
-
-
         for(int i=0; i<minEllipse.size(); ++i){
-            double Erad = degr_rad(minEllipse[i].angle); //Convierte el angulo de la elipse de grados a radianes
-            cv::ellipse(frame, minEllipse[i], cv::Scalar(0,0,255),2);//Pinta la elipse en pantalla
-            cv::putText(frame, cv::format("No. Paramecium: %ld", minEllipse.size()), {10,25}, 1,2, cv::Scalar(0,255,255),3, 8); //Pinta el numero de paramecios totales en pantalla
-            cv::drawMarker(frame, minEllipse[i].center, cv::Scalar(0,0,255), 0,10); // Pinta una cruz en el centro del paramecio
-            cv::putText(frame, cv::format("([%.2f, %.2f], %.2frad)",minEllipse[i].center.x,minEllipse[i].center.y, Erad) ,
-                        minEllipse[i].center, 1 ,1.3,cv::Scalar(255,255,100),2, cv::LINE_AA); // Pinta las coordenadas (x,y) y el angulo del paramecio
-            
-            
-            //std::cout<<"CENTROS EN EL "<<count<<" FRAME: "<<minEllipse[i].center<<std::endl;
-            
-            //cv::line(frame, centers[0], centers[1], cv::Scalar(100,200,255), 10, cv::LINE_8, 0);
+            if(minEllipse[i].size.area() <3500){
+                double Erad = degr_rad(minEllipse[i].angle); //Convierte el angulo de la elipse de grados a radianes
+                cv::ellipse(frame, minEllipse[i], cv::Scalar(0,0,255),2);//Pinta la elipse en pantalla
+                cv::putText(frame, cv::format("No. Paramecium: %ld", minEllipse.size()), {10,25}, 1,2, cv::Scalar(0,255,255),3, 8); //Pinta el numero de paramecios totales en pantalla
+                cv::drawMarker(frame, minEllipse[i].center, cv::Scalar(0,0,255), 0,10); // Pinta una cruz en el centro del paramecio
+                cv::putText(frame, cv::format("([%.2f, %.2f], %.2frad)",minEllipse[i].center.x,minEllipse[i].center.y, Erad) ,
+                            minEllipse[i].center, 1 ,1.3,cv::Scalar(255,255,100),2, cv::LINE_AA); // Pinta las coordenadas (x,y) y el angulo del paramecio
+                
+                cv::circle(frame, minEllipse[i].center, 6, cv::Scalar(0,255,0),2, cv::LINE_8);
+                
 
-            /*
-           //std::cout<<minEllipse[i].center;
-            std::cout<<"PUNTOS DE CONTORNO:"<<std::endl;
-            std::cout<<i+1<<": "<<cnts[i]<<std::endl;
-            std::cout<<"ELLIPSE SIZE (a y b), center & angle"<<std::endl;
-            std::cout<<minEllipse[i].size<<std::endl;
-            std::cout<<minEllipse[i].center<<std::endl;
-            std::cout<<minEllipse[i].angle<<std::endl;*/
+                //std::cout<<"CENTROS EN EL "<<count<<" FRAME: "<<minEllipse[i].center<<std::endl;
+                
+                //cv::line(frame, centers[0], centers[1], cv::Scalar(100,200,255), 10, cv::LINE_8, 0);
 
+                /*
+            //std::cout<<minEllipse[i].center;
+                std::cout<<"PUNTOS DE CONTORNO:"<<std::endl;
+                std::cout<<i+1<<": "<<cnts[i]<<std::endl;
+                std::cout<<"ELLIPSE SIZE (a y b), center & angle"<<std::endl;
+                std::cout<<minEllipse[i].size<<std::endl;
+                std::cout<<minEllipse[i].center<<std::endl;
+                std::cout<<minEllipse[i].angle<<std::endl;*/
+
+                
+
+                /*if(count  % 2 != 0){
+                    centersArr2.push_back(minEllipse[i].center);
+                    std::cout<<i<<" :true"<<std::endl;
+                    std::cout<<centersArr2[i]<<std::endl;
+                }else{
+                    centersArr1.push_back(minEllipse[i].center);
+                    std::cout<<i<<" :false"<<std::endl;
+                    std::cout<<centersArr1[i]<<std::endl;
+                }
+
+                if(!centersArr1.empty() && !centersArr2.empty()){
+                    //cv::line(frame, centersArr2[i], centersArr1[i], cv::Scalar(0,255,0), 1);
+                }*/
             
-            x<<minEllipse[i].center.x<<",";
-            y<<minEllipse[i].center.y<<",";
-            angle<<Erad<<",";
+
+                //std::cout<<minEllipse[i].size.area()<<std::endl;
+        
+                
+
+                x<<minEllipse[i].center.x<<",";
+                y<<minEllipse[i].center.y<<",";
+                angle<<Erad<<",";
+            }
 
         }
 
@@ -135,24 +159,27 @@ int main(int argc, char** argv){
                 std::cout<<(int)rowsFrame[j]<<std::endl;
             }
         }*/
+        
         //Muestra todo el proceso y el resultado final en frame
         cv::imshow("MainWindow", frame);
         cv::imshow("NormalizedWindow", NormalizeFrame);
         cv::imshow("thWindow", thFrame);
         cv::imshow("DWindow", DilFrame);
         cv::imshow("GrayWindow", frameGray);
-        cv::imshow("CannyWindow", cannyFrame);        
-        //cv::imshow("thWindow", thFrame);
-
+        cv::imshow("CannyWindow", cannyFrame);   
 
         if(cv::waitKey(1) == 27){ //condicion de paro del video, si se aprieta la tecla esc para el video
             break;
         }
         x<<"\n";
         y<<"\n";
-        angle<<"\n"; 
+        angle<<"\n";
+        
         ++count; //contador de frames
     }
+    x.close();
+    y.close();
+    angle.close();
     video.release(); //cierra el video
     cv::destroyAllWindows(); //destruye todas las ventanas creadas
 
