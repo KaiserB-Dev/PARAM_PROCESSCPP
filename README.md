@@ -37,15 +37,15 @@ El branch de debug contiene las ultimas modificaciones, por ende es mas inestabl
             </ul>
         <h2>  Compilación y ejecución del programa  </h2>
         Compilación: <i>./compile.bat</i> <b>NOTA: En este script puede variar en donde esta instalado opencv, el parametro I y el parametro L se debe de poner la ruta respectiva de tanto los includes como los lib <i>(-I{extract_directory}/opencv/build/include && -L{extract_directory}/opencv/build/lib )</i></b> </br>
-        Ejecución: <i>Usage: run.exe [params] input 
-        -?, -h, --help (value:true)
-                print the help for this program
-        -d, --delay (value:1)
-                set the fps or delay in video
-        --fN, --file_name (value:default)
-                string for data files
-        input (value:stuff.wmv)
-                input video in wmv format</i>
+        Ejecución: <i><b>Usage: run.exe [params] input </br>
+        -?, -h, --help (value:true)</br>
+                print the help for this program</br>
+        -d, --delay (value:1)</br>
+                set the fps or delay in video</br>
+        --fN, --file_name (value:default)</br>
+                string for data files</br>
+        input (value:stuff.wmv)</br>
+                input video in wmv format</i></b></br>
         <h1>COMO COMPILAR OPENCV</h1>
         <h2>  Prerrequisitos  </h2>
         <img src="./resources_readme/req.png"></img>
