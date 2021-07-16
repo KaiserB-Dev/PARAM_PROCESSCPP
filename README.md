@@ -36,8 +36,8 @@ El branch de debug contiene las ultimas modificaciones, por ende es mas inestabl
                 <li>Opencv 4.5.0</li>
             </ul>
         <h2>  Compilación y ejecución del programa  </h2>
-        Compilación: <i>./compile.bat</i> <b>NOTA: En este script puede variar en donde esta instalado opencv, el parametro I y el parametro L se debe de poner la ruta respectiva de tanto los includes como los lib <i>(-I{extract_directory}/opencv/build/include && -L{extract_directory}/opencv/build/lib )</i></b> </br>
-        Ejecución: <i><b>Usage: run.exe [params] input </br>
+        Compilación: <i>./compile.bat</i> <b>NOTA: En este script puede variar en donde esta instalado opencv, el parametro I y el parametro L se debe de poner la ruta respectiva de tanto los includes como los lib <i>(-I{extract_directory}/opencv/build/include && -L{extract_directory}/opencv/build/lib )</i></b> </br> </br>
+        <b>Ejecución: <i>Usage: run.exe [params] input </br>
         -?, -h, --help (value:true)</br>
                 print the help for this program</br>
         -d, --delay (value:1)</br>
