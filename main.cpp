@@ -25,13 +25,13 @@ double degr_rad(double degr){
 
     return rad;
 }
+
 int main(int argc, char** argv){
 
     const std::string keys_args = "{help h ?   |           | print the help for this program}"
                                   "{@input     | stuff.wmv | input video in wmv format}"
                                   "{fN file_name |default| string for data files }"
                                   "{delay d    | 1 | set the fps or delay in video}";
-
 
     cv::CommandLineParser parser( argc, argv, keys_args ); //Parser para obtener y leer el video desde los argumentos de ejecución del programa
     std::string x_data_name = "./data_files/x_";
@@ -61,9 +61,9 @@ int main(int argc, char** argv){
     cv::Mat frame, frameGray, NormalizeFrame, thFrame, DilFrame, cannyFrame; //Definiendo matrices vacias
     cv::Mat kernel;
     kernel.ones(cv::Size(10,10), 8);
-    std::ofstream x("./data_files/x.csv");
-    std::ofstream y("./data_files/y.csv");
-    std::ofstream angle("./data_files/angle.csv");
+    std::ofstream x(x_data_name);
+    std::ofstream y(y_data_name);
+    std::ofstream angle(angle_data_name);
 
     //std::cout<<start<<std::endl;
 
@@ -80,9 +80,6 @@ int main(int argc, char** argv){
    
     std::deque<cv::Point> centersArr1;
     std::deque<cv::Point> centersArr2;
-
-
-    cv::CommandLineParser parser( argc, argv, "{@input | stuff.wmv | input video}" ); //Parser para obtener y leer el video desde los argumentos de ejecución del programa
 
     video = cv::VideoCapture(cv::samples::findFile(parser.get<std::string>( "@input" ) )); //Carga el input en el objeto video capture (se puede modificar para analizar paramecium en tiempo real con alguna camara como el dinolite)
     int total_frames = video.get(cv::CAP_PROP_FRAME_COUNT);
@@ -110,7 +107,6 @@ int main(int argc, char** argv){
         cv::erode(DilFrame, DilFrame, kernel, cv::Point(-1,-1), 2, cv::BORDER_CONSTANT, cv::morphologyDefaultBorderValue()); //Esta parte es la eroción de la imagen previamente dilatada. lo hace con una kernel de unos;
         //El punto (-1,-1) indica que el punto de ancla de la eroción esta en el centro de cada elemento y este copia el borde original {PENDIENTE cv::morphologyDefaultBorderValue()}
         cv::morphologyEx(DilFrame, DilFrame, cv::MORPH_OPEN, cv::getStructuringElement(cv::MORPH_ELLIPSE,(cv::Size(10,10)))); //Dilata la imagen y luego erosiona la imagen dilatada
-        cv::morphologyEx(DilFrame, DilFrame, cv::MORPH_CLOSE, cv::getStructuringElement(cv::MORPH_CROSS,(cv::Size(3,3))));
         //fin preprocessing
         
         //contornos
@@ -171,12 +167,11 @@ int main(int argc, char** argv){
             
 
                 //std::cout<<minEllipse[i].size.area()<<std::endl;
-        
-                
 
                 x<<minEllipse[i].center.x<<",";
                 y<<minEllipse[i].center.y<<",";
                 angle<<Erad<<",";
+    
             }
 
         }
