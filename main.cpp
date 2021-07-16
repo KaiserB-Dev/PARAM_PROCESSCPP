@@ -27,6 +27,35 @@ double degr_rad(double degr){
 }
 int main(int argc, char** argv){
 
+    const std::string keys_args = "{help h ?   |           | print the help for this program}"
+                                  "{@input     | stuff.wmv | input video in wmv format}"
+                                  "{fN file_name |default| string for data files }"
+                                  "{delay d    | 1 | set the fps or delay in video}";
+
+
+    cv::CommandLineParser parser( argc, argv, keys_args ); //Parser para obtener y leer el video desde los argumentos de ejecución del programa
+    std::string x_data_name = "./data_files/x_";
+    std::string y_data_name = "./data_files/y_";
+    std::string angle_data_name = "./data_files/angle_";
+
+    if(parser.has("help") || parser.has("?") || parser.has("h")){
+        parser.printMessage();
+        return 0;
+    }
+    if(!parser.check()){
+        parser.printErrors();
+        parser.printMessage();
+        return 0;
+    }
+
+    x_data_name += parser.get<std::string>("file_name");
+    x_data_name += ".csv";
+    y_data_name += parser.get<std::string>("file_name");
+    y_data_name += ".csv";
+    angle_data_name += parser.get<std::string>("file_name");
+    angle_data_name += ".csv";
+
+
     std::clock_t start = std::clock();
     cv::VideoCapture video;
     cv::Mat frame, frameGray, NormalizeFrame, thFrame, DilFrame, cannyFrame; //Definiendo matrices vacias
@@ -74,11 +103,11 @@ int main(int argc, char** argv){
 
         //preprocessing part
         cv::cvtColor(frame, frameGray, cv::COLOR_BGR2GRAY); //Converción de canal BGR a GRAY
-        cv::normalize(frameGray, NormalizeFrame, 0, 255, cv::NORM_MINMAX); //Normalización del frame entre valores de 0 a 255 por el metodo de MINMAX
-        cv::threshold(NormalizeFrame, thFrame, 60, 255, cv::THRESH_BINARY); //Binarización del frame, con un valor de thresh de 60 y un maxval de 255
+        cv::normalize(frameGray, NormalizeFrame, 1, 255, cv::NORM_MINMAX); //Normalización del frame entre valores de 0 a 255 por el metodo de MINMAX
+        cv::threshold(NormalizeFrame, thFrame, 50, 255, cv::THRESH_BINARY); //Binarización del frame, con un valor de thresh de 60 y un maxval de 255
         cv::dilate(thFrame, DilFrame, cv::getStructuringElement(cv::MORPH_ELLIPSE,(cv::Size(5,5))));//Dilatación de la imagen con una estructura especificada en tamaño y forma para la operacion morfologica.
         //MORPH_ELLIPSE es un elemento estructural eliptico el cual esta inscrito en un rectangulo[x,y,width,heigth].
-        cv::erode(DilFrame, DilFrame, kernel, cv::Point(-1,-1), 2, cv::BORDER_DEFAULT, cv::morphologyDefaultBorderValue()); //Esta parte es la eroción de la imagen previamente dilatada. lo hace con una kernel de unos;
+        cv::erode(DilFrame, DilFrame, kernel, cv::Point(-1,-1), 2, cv::BORDER_CONSTANT, cv::morphologyDefaultBorderValue()); //Esta parte es la eroción de la imagen previamente dilatada. lo hace con una kernel de unos;
         //El punto (-1,-1) indica que el punto de ancla de la eroción esta en el centro de cada elemento y este copia el borde original {PENDIENTE cv::morphologyDefaultBorderValue()}
         cv::morphologyEx(DilFrame, DilFrame, cv::MORPH_OPEN, cv::getStructuringElement(cv::MORPH_ELLIPSE,(cv::Size(10,10)))); //Dilata la imagen y luego erosiona la imagen dilatada
         cv::morphologyEx(DilFrame, DilFrame, cv::MORPH_CLOSE, cv::getStructuringElement(cv::MORPH_CROSS,(cv::Size(3,3))));
@@ -168,7 +197,7 @@ int main(int argc, char** argv){
         cv::imshow("GrayWindow", frameGray);
         cv::imshow("CannyWindow", cannyFrame);   
 
-        if(cv::waitKey(1) == 27){ //condicion de paro del video, si se aprieta la tecla esc para el video
+        if(cv::waitKey(parser.get<int>("delay")) == 27){ //condicion de paro del video, si se aprieta la tecla esc para el video
             break;
         }
         x<<"\n";
