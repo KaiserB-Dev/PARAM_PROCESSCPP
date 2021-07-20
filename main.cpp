@@ -111,7 +111,7 @@ int main(int argc, char** argv){
         
         //contornos
         cv::Canny(DilFrame, cannyFrame, 80, 200); //Encuentra los bordes de una imagen por medio del algoritmo canny
-        cv::findContours(cannyFrame, cnts,cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE);  //En base a la imagen procesada con canny este busca los puntos de los bordes y los almacena en un vector de vectores de puntos
+        cv::findContours(cannyFrame, cnts,cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);  //En base a la imagen procesada con canny este busca los puntos de los bordes y los almacena en un vector de vectores de puntos
 
         //cv::drawContours(frame, cnts, -1, cv::Scalar(0,0,255));
     
