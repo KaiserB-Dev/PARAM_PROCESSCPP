@@ -16,16 +16,6 @@
 #include "MatlabEngine.hpp" 
 #include "MatlabDataArray.hpp"*/
 
-double degr_rad(double degr);
-
-double degr_rad(double degr){
-    double rad;
-
-    rad = degr*(M_PI/180);
-
-    return rad;
-}
-
 int main(int argc, char** argv){
 
     const std::string keys_args = "{help h ?   |           | print the help for this program}"
@@ -126,11 +116,10 @@ int main(int argc, char** argv){
         cv::putText(frame, cv::format("FPS: %d", fps), {frame.rows+25, 50}, 1, 2, cv::Scalar(100,0,255),3,8); //Muestra los frames por segundo (FPS)
         for(int i=0; i<minEllipse.size(); ++i){
             if(minEllipse[i].size.area() <3500){
-                double Erad = degr_rad(minEllipse[i].angle); //Convierte el angulo de la elipse de grados a radianes
                 cv::ellipse(frame, minEllipse[i], cv::Scalar(0,0,255),2);//Pinta la elipse en pantalla
                 cv::putText(frame, cv::format("No. Paramecium: %ld", minEllipse.size()), {10,25}, 1,2, cv::Scalar(0,255,255),3, 8); //Pinta el numero de paramecios totales en pantalla
                 cv::drawMarker(frame, minEllipse[i].center, cv::Scalar(0,0,255), 0,10); // Pinta una cruz en el centro del paramecio
-                cv::putText(frame, cv::format("([%.2f, %.2f], %.2frad)",minEllipse[i].center.x,minEllipse[i].center.y, Erad) ,
+                cv::putText(frame, cv::format("([%.3f, %.3f], %.2f deg)",minEllipse[i].center.x,minEllipse[i].center.y, minEllipse[i].angle) ,
                             minEllipse[i].center, 1 ,1.3,cv::Scalar(255,255,100),2, cv::LINE_AA); // Pinta las coordenadas (x,y) y el angulo del paramecio
                 
                 cv::circle(frame, minEllipse[i].center, 6, cv::Scalar(0,255,0),2, cv::LINE_8);
@@ -170,7 +159,7 @@ int main(int argc, char** argv){
 
                 x<<minEllipse[i].center.x<<",";
                 y<<minEllipse[i].center.y<<",";
-                angle<<Erad<<",";
+                angle<<minEllipse[i].angle<<",";
     
             }
 
