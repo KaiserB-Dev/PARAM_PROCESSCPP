@@ -100,7 +100,7 @@ int main(int argc, char** argv){
         //fin preprocessing
         
         //contornos
-        cv::Canny(DilFrame, cannyFrame, 80, 200); //Encuentra los bordes de una imagen por medio del algoritmo canny
+        cv::Canny(DilFrame, cannyFrame, 50, 200); //Encuentra los bordes de una imagen por medio del algoritmo canny
         cv::findContours(cannyFrame, cnts,cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);  //En base a la imagen procesada con canny este busca los puntos de los bordes y los almacena en un vector de vectores de puntos
 
         //cv::drawContours(frame, cnts, -1, cv::Scalar(0,0,255));
@@ -119,9 +119,12 @@ int main(int argc, char** argv){
                 cv::ellipse(frame, minEllipse[i], cv::Scalar(0,0,255),2);//Pinta la elipse en pantalla
                 cv::putText(frame, cv::format("No. Paramecium: %ld", minEllipse.size()), {10,25}, 1,2, cv::Scalar(0,255,255),3, 8); //Pinta el numero de paramecios totales en pantalla
                 cv::drawMarker(frame, minEllipse[i].center, cv::Scalar(0,0,255), 0,10); // Pinta una cruz en el centro del paramecio
-                cv::putText(frame, cv::format("([%.3f, %.3f], %.2f deg)",minEllipse[i].center.x,minEllipse[i].center.y, minEllipse[i].angle) ,
-                            minEllipse[i].center, 1 ,1.3,cv::Scalar(255,255,100),2, cv::LINE_AA); // Pinta las coordenadas (x,y) y el angulo del paramecio
-                
+                double realAngle = minEllipse[i].angle;  
+               
+                cv::putText(frame, cv::format("([%.3f, %.3f], %.2f deg)",minEllipse[i].center.x,minEllipse[i].center.y, realAngle) ,
+                        minEllipse[i].center, 1 ,1.3,cv::Scalar(255,255,100),2, cv::LINE_AA);
+            
+                 // Pinta las coordenadas (x,y) y el angulo del paramecio                
                 cv::circle(frame, minEllipse[i].center, 6, cv::Scalar(0,255,0),2, cv::LINE_8);
                 
 
@@ -159,7 +162,7 @@ int main(int argc, char** argv){
 
                 x<<minEllipse[i].center.x<<",";
                 y<<minEllipse[i].center.y<<",";
-                angle<<minEllipse[i].angle<<",";
+                angle<<realAngle<<",";
     
             }
 
