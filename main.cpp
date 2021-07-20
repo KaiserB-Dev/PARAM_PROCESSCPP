@@ -100,7 +100,7 @@ int main(int argc, char** argv){
 
         //preprocessing part
         cv::cvtColor(frame, frameGray, cv::COLOR_BGR2GRAY); //Converción de canal BGR a GRAY
-        cv::normalize(frameGray, NormalizeFrame, 1, 255, cv::NORM_MINMAX); //Normalización del frame entre valores de 0 a 255 por el metodo de MINMAX
+        cv::normalize(frameGray, NormalizeFrame, 0, 255, cv::NORM_MINMAX); //Normalización del frame entre valores de 0 a 255 por el metodo de MINMAX
         cv::threshold(NormalizeFrame, thFrame, 50, 255, cv::THRESH_BINARY); //Binarización del frame, con un valor de thresh de 60 y un maxval de 255
         cv::dilate(thFrame, DilFrame, cv::getStructuringElement(cv::MORPH_ELLIPSE,(cv::Size(6,6))));//Dilatación de la imagen con una estructura especificada en tamaño y forma para la operacion morfologica.
         //MORPH_ELLIPSE es un elemento estructural eliptico el cual esta inscrito en un rectangulo[x,y,width,heigth].
@@ -111,7 +111,7 @@ int main(int argc, char** argv){
         
         //contornos
         cv::Canny(DilFrame, cannyFrame, 80, 200); //Encuentra los bordes de una imagen por medio del algoritmo canny
-        cv::findContours(cannyFrame, cnts,cv::RETR_TREE, cv::CHAIN_APPROX_NONE);  //En base a la imagen procesada con canny este busca los puntos de los bordes y los almacena en un vector de vectores de puntos
+        cv::findContours(cannyFrame, cnts,cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE);  //En base a la imagen procesada con canny este busca los puntos de los bordes y los almacena en un vector de vectores de puntos
 
         //cv::drawContours(frame, cnts, -1, cv::Scalar(0,0,255));
     
