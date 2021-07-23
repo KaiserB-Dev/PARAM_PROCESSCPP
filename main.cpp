@@ -11,10 +11,8 @@
 #include <fstream>
 #include <ctime>
 #include <deque> 
+
 #define M_PI 3.14159265358979323846
-/*
-#include "MatlabEngine.hpp" 
-#include "MatlabDataArray.hpp"*/
 
 int main(int argc, char** argv){
 
@@ -46,6 +44,7 @@ int main(int argc, char** argv){
     angle_data_name += ".csv";
 
 
+
     std::clock_t start = std::clock();
     cv::VideoCapture video;
     cv::Mat frame, frameGray, NormalizeFrame, thFrame, DilFrame, cannyFrame; //Definiendo matrices vacias
@@ -54,7 +53,6 @@ int main(int argc, char** argv){
     std::ofstream x(x_data_name);
     std::ofstream y(y_data_name);
     std::ofstream angle(angle_data_name);
-
     //std::cout<<start<<std::endl;
 
     cv::namedWindow("MainWindow", cv::WINDOW_NORMAL);
@@ -62,15 +60,12 @@ int main(int argc, char** argv){
     cv::namedWindow("NormalizedWindow", cv::WINDOW_NORMAL);
     cv::namedWindow("thWindow", cv::WINDOW_NORMAL);
     cv::namedWindow("DWindow", cv::WINDOW_NORMAL);
+    cv::namedWindow("EWindow", cv::WINDOW_NORMAL);
+    cv::namedWindow("OWindow", cv::WINDOW_NORMAL);
     cv::namedWindow("CannyWindow", cv::WINDOW_NORMAL);
 
     //std::string strCoords;
     std::vector<std::vector<cv::Point>> cnts; //[x,y]
-    std::vector<cv::Point> points_center_prev;
-   
-    std::deque<cv::Point> centersArr1;
-    std::deque<cv::Point> centersArr2;
-
     video = cv::VideoCapture(cv::samples::findFile(parser.get<std::string>( "@input" ) )); //Carga el input en el objeto video capture (se puede modificar para analizar paramecium en tiempo real con alguna camara como el dinolite)
     int total_frames = video.get(cv::CAP_PROP_FRAME_COUNT);
     int fps = video.get(cv::CAP_PROP_FPS);
@@ -93,20 +88,29 @@ int main(int argc, char** argv){
         cv::normalize(frameGray, NormalizeFrame, 0, 255, cv::NORM_MINMAX); //Normalización del frame entre valores de 0 a 255 por el metodo de MINMAX
         cv::threshold(NormalizeFrame, thFrame, 50, 255, cv::THRESH_BINARY); //Binarización del frame, con un valor de thresh de 60 y un maxval de 255
         cv::dilate(thFrame, DilFrame, cv::getStructuringElement(cv::MORPH_ELLIPSE,(cv::Size(6,6))));//Dilatación de la imagen con una estructura especificada en tamaño y forma para la operacion morfologica.
+        cv::imshow("DWindow", DilFrame);
         //MORPH_ELLIPSE es un elemento estructural eliptico el cual esta inscrito en un rectangulo[x,y,width,heigth].
         cv::erode(DilFrame, DilFrame, kernel, cv::Point(-1,-1), 2, cv::BORDER_CONSTANT, cv::morphologyDefaultBorderValue()); //Esta parte es la eroción de la imagen previamente dilatada. lo hace con una kernel de unos;
+        cv::imshow("EWindow", DilFrame);
         //El punto (-1,-1) indica que el punto de ancla de la eroción esta en el centro de cada elemento y este copia el borde original {PENDIENTE cv::morphologyDefaultBorderValue()}
         cv::morphologyEx(DilFrame, DilFrame, cv::MORPH_OPEN, cv::getStructuringElement(cv::MORPH_ELLIPSE,(cv::Size(10,10)))); //Dilata la imagen y luego erosiona la imagen dilatada
+        cv::imshow("OWindow", DilFrame);
+
         //fin preprocessing
         
         //contornos
         cv::Canny(DilFrame, cannyFrame, 50, 200); //Encuentra los bordes de una imagen por medio del algoritmo canny
         cv::findContours(cannyFrame, cnts,cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);  //En base a la imagen procesada con canny este busca los puntos de los bordes y los almacena en un vector de vectores de puntos
 
+        std::vector<std::vector<cv::Point>> PolyAprox(cnts.size());
+
         //cv::drawContours(frame, cnts, -1, cv::Scalar(0,0,255));
     
         std::vector<cv::RotatedRect> minEllipse(cnts.size()); //Con los puntos previamente calculados aproxima un rectangulo rotatorio (con el fin de calcular y aproximar la elipse con su respectivo angulo de rotación)
         for(int i = 0; i < cnts.size(); ++i){
+            
+            cv::approxPolyDP(cv::Mat(cnts[i]), PolyAprox[i], 6, false);
+            
             minEllipse[i] = cv::minAreaRect(cnts[i]); //Calcula e inscribe el area mas pequeña del rectangulo en donde se inscribira la elipse
             if(cnts[i].size() > 5){
                 minEllipse[i] = cv::fitEllipse(cnts[i]); //Inscribe la elipse en el rectangulo
@@ -122,12 +126,12 @@ int main(int argc, char** argv){
                 double realAngle = minEllipse[i].angle;  
                
                 cv::putText(frame, cv::format("([%.3f, %.3f], %.2f deg)",minEllipse[i].center.x,minEllipse[i].center.y, realAngle) ,
-                        minEllipse[i].center, 1 ,1.3,cv::Scalar(255,255,100),2, cv::LINE_AA);
+                        minEllipse[i].center, 1 ,1.3,cv::Scalar(255,255,100),2, cv::LINE_AA); // Pinta las coordenadas (x,y) y el angulo del paramecio     
             
-                 // Pinta las coordenadas (x,y) y el angulo del paramecio                
-                cv::circle(frame, minEllipse[i].center, 6, cv::Scalar(0,255,0),2, cv::LINE_8);
-                
+                           
+                cv::circle(frame, minEllipse[i].center, 6, cv::Scalar(0,255,0),2, cv::LINE_8);    
 
+                cv::drawContours(frame, PolyAprox, i, cv::Scalar(255,255,0), 2); 
                 //std::cout<<"CENTROS EN EL "<<count<<" FRAME: "<<minEllipse[i].center<<std::endl;
                 
                 //cv::line(frame, centers[0], centers[1], cv::Scalar(100,200,255), 10, cv::LINE_8, 0);
@@ -140,22 +144,6 @@ int main(int argc, char** argv){
                 std::cout<<minEllipse[i].size<<std::endl;
                 std::cout<<minEllipse[i].center<<std::endl;
                 std::cout<<minEllipse[i].angle<<std::endl;*/
-
-                
-
-                /*if(count  % 2 != 0){
-                    centersArr2.push_back(minEllipse[i].center);
-                    std::cout<<i<<" :true"<<std::endl;
-                    std::cout<<centersArr2[i]<<std::endl;
-                }else{
-                    centersArr1.push_back(minEllipse[i].center);
-                    std::cout<<i<<" :false"<<std::endl;
-                    std::cout<<centersArr1[i]<<std::endl;
-                }
-
-                if(!centersArr1.empty() && !centersArr2.empty()){
-                    //cv::line(frame, centersArr2[i], centersArr1[i], cv::Scalar(0,255,0), 1);
-                }*/
             
 
                 //std::cout<<minEllipse[i].size.area()<<std::endl;
@@ -163,11 +151,12 @@ int main(int argc, char** argv){
                 x<<minEllipse[i].center.x<<",";
                 y<<minEllipse[i].center.y<<",";
                 angle<<realAngle<<",";
-    
+
+            
+
             }
-
         }
-
+ 
 
         /*for(int i = 0; i<frame.rows; ++i){
             uchar* rowsFrame = frame.ptr<uchar>(i);
@@ -180,7 +169,7 @@ int main(int argc, char** argv){
         cv::imshow("MainWindow", frame);
         cv::imshow("NormalizedWindow", NormalizeFrame);
         cv::imshow("thWindow", thFrame);
-        cv::imshow("DWindow", DilFrame);
+        //cv::imshow("DWindow", DilFrame);
         cv::imshow("GrayWindow", frameGray);
         cv::imshow("CannyWindow", cannyFrame);   
 
