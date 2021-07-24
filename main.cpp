@@ -25,7 +25,6 @@ int main(int argc, char** argv){
     std::string x_data_name = "./data_files/x_";
     std::string y_data_name = "./data_files/y_";
     std::string angle_data_name = "./data_files/angle_";
-    double concavityPre=0 , concavityNext = 0;
 
     if(parser.has("help") || parser.has("?") || parser.has("h")){
         parser.printMessage();
