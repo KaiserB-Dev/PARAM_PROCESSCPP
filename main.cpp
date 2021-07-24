@@ -25,6 +25,7 @@ int main(int argc, char** argv){
     std::string x_data_name = "./data_files/x_";
     std::string y_data_name = "./data_files/y_";
     std::string angle_data_name = "./data_files/angle_";
+    double concavityPre=0 , concavityNext = 0;
 
     if(parser.has("help") || parser.has("?") || parser.has("h")){
         parser.printMessage();
@@ -103,14 +104,17 @@ int main(int argc, char** argv){
         cv::findContours(cannyFrame, cnts,cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);  //En base a la imagen procesada con canny este busca los puntos de los bordes y los almacena en un vector de vectores de puntos
 
         std::vector<std::vector<cv::Point>> PolyAprox(cnts.size());
+        std::vector<std::vector<cv::Point>> Hull(cnts.size());
+        std::vector<std::vector<cv::Point>> Defects(cnts.size());
 
         //cv::drawContours(frame, cnts, -1, cv::Scalar(0,0,255));
     
         std::vector<cv::RotatedRect> minEllipse(cnts.size()); //Con los puntos previamente calculados aproxima un rectangulo rotatorio (con el fin de calcular y aproximar la elipse con su respectivo angulo de rotación)
         for(int i = 0; i < cnts.size(); ++i){
             
-            cv::approxPolyDP(cv::Mat(cnts[i]), PolyAprox[i], 6, false);
-            
+            cv::approxPolyDP(cv::Mat(cnts[i]), PolyAprox[i], 6.6, false);
+            cv::convexHull(cv::Mat(cnts[i]), Hull[i], false);
+
             minEllipse[i] = cv::minAreaRect(cnts[i]); //Calcula e inscribe el area mas pequeña del rectangulo en donde se inscribira la elipse
             if(cnts[i].size() > 5){
                 minEllipse[i] = cv::fitEllipse(cnts[i]); //Inscribe la elipse en el rectangulo
@@ -131,7 +135,16 @@ int main(int argc, char** argv){
                            
                 cv::circle(frame, minEllipse[i].center, 6, cv::Scalar(0,255,0),2, cv::LINE_8);    
 
-                cv::drawContours(frame, PolyAprox, i, cv::Scalar(255,255,0), 2); 
+                cv::drawContours(frame, PolyAprox, i, cv::Scalar(255,255,0), 2);
+
+                
+
+                
+
+                //std::cout<<i<<": "<<PolyAprox[i]<<std::endl; 
+
+            
+
                 //std::cout<<"CENTROS EN EL "<<count<<" FRAME: "<<minEllipse[i].center<<std::endl;
                 
                 //cv::line(frame, centers[0], centers[1], cv::Scalar(100,200,255), 10, cv::LINE_8, 0);
