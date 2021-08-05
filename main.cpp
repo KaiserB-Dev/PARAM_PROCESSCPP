@@ -70,6 +70,8 @@ int main(int argc, char** argv){
     int total_frames = video.get(cv::CAP_PROP_FRAME_COUNT);
     int fps = video.get(cv::CAP_PROP_FPS);
 
+    std::vector<cv::Mat> saved_frames(total_frames);
+
 
 
     if(!video.isOpened()){
@@ -82,6 +84,8 @@ int main(int argc, char** argv){
     while(true){
         video.read(frame);
         if(frame.empty()) break;   
+
+        saved_frames.push_back(frame);
 
         //preprocessing part
         cv::cvtColor(frame, frameGray, cv::COLOR_BGR2GRAY); //Converción de canal BGR a GRAY
@@ -103,16 +107,13 @@ int main(int argc, char** argv){
         cv::findContours(cannyFrame, cnts,cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);  //En base a la imagen procesada con canny este busca los puntos de los bordes y los almacena en un vector de vectores de puntos
 
         std::vector<std::vector<cv::Point>> PolyAprox(cnts.size());
-        std::vector<std::vector<cv::Point>> Hull(cnts.size());
-        std::vector<std::vector<cv::Point>> Defects(cnts.size());
 
         //cv::drawContours(frame, cnts, -1, cv::Scalar(0,0,255));
     
         std::vector<cv::RotatedRect> minEllipse(cnts.size()); //Con los puntos previamente calculados aproxima un rectangulo rotatorio (con el fin de calcular y aproximar la elipse con su respectivo angulo de rotación)
         for(int i = 0; i < cnts.size(); ++i){
             
-            cv::approxPolyDP(cv::Mat(cnts[i]), PolyAprox[i], 6.6, false);
-            cv::convexHull(cv::Mat(cnts[i]), Hull[i], false);
+            cv::approxPolyDP(cv::Mat(cnts[i]), PolyAprox[i], 4, true);
 
             minEllipse[i] = cv::minAreaRect(cnts[i]); //Calcula e inscribe el area mas pequeña del rectangulo en donde se inscribira la elipse
             if(cnts[i].size() > 5){
@@ -122,7 +123,7 @@ int main(int argc, char** argv){
         cv::putText(frame, cv::format("Frame: %d/%d", count+1, total_frames), {frame.rows+25, 25}, 1, 2, cv::Scalar(100,0,255),3,8); //Muestra los frames totales y el numero de frame en el que va el video
         cv::putText(frame, cv::format("FPS: %d", fps), {frame.rows+25, 50}, 1, 2, cv::Scalar(100,0,255),3,8); //Muestra los frames por segundo (FPS)
         for(int i=0; i<minEllipse.size(); ++i){
-            if(minEllipse[i].size.area() <3500){
+            if(minEllipse[i].size.area() < 3500 ){ //3500 A
                 cv::ellipse(frame, minEllipse[i], cv::Scalar(0,0,255),2);//Pinta la elipse en pantalla
                 cv::putText(frame, cv::format("No. Paramecium: %ld", minEllipse.size()), {10,25}, 1,2, cv::Scalar(0,255,255),3, 8); //Pinta el numero de paramecios totales en pantalla
                 cv::drawMarker(frame, minEllipse[i].center, cv::Scalar(0,0,255), 0,10); // Pinta una cruz en el centro del paramecio
@@ -131,23 +132,19 @@ int main(int argc, char** argv){
                 cv::putText(frame, cv::format("([%.3f, %.3f], %.2f deg)",minEllipse[i].center.x,minEllipse[i].center.y, realAngle) ,
                         minEllipse[i].center, 1 ,1.3,cv::Scalar(255,255,100),2, cv::LINE_AA); // Pinta las coordenadas (x,y) y el angulo del paramecio     
             
-                           
-                cv::circle(frame, minEllipse[i].center, 6, cv::Scalar(0,255,0),2, cv::LINE_8);    
-
                 cv::drawContours(frame, PolyAprox, i, cv::Scalar(255,255,0), 2);
-
-                
-
                 
 
                 //std::cout<<i<<": "<<PolyAprox[i]<<std::endl; 
-
-            
 
                 //std::cout<<"CENTROS EN EL "<<count<<" FRAME: "<<minEllipse[i].center<<std::endl;
                 
                 //cv::line(frame, centers[0], centers[1], cv::Scalar(100,200,255), 10, cv::LINE_8, 0);
 
+               /* for(int j=0; j<PolyAprox[i].size(); ++j){
+                    std::cout<<i<<": "<<PolyAprox[i][j]<<std::endl;
+                }*/
+             
                 /*
             //std::cout<<minEllipse[i].center;
                 std::cout<<"PUNTOS DE CONTORNO:"<<std::endl;
@@ -163,7 +160,6 @@ int main(int argc, char** argv){
                 x<<minEllipse[i].center.x<<",";
                 y<<minEllipse[i].center.y<<",";
                 angle<<realAngle<<",";
-
             
 
             }
@@ -183,7 +179,7 @@ int main(int argc, char** argv){
         cv::imshow("thWindow", thFrame);
         //cv::imshow("DWindow", DilFrame);
         cv::imshow("GrayWindow", frameGray);
-        cv::imshow("CannyWindow", cannyFrame);   
+        cv::imshow("CannyWindow", cannyFrame);  
 
         if(cv::waitKey(parser.get<int>("delay")) == 27){ //condicion de paro del video, si se aprieta la tecla esc para el video
             break;
