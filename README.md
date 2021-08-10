@@ -3,7 +3,7 @@
 El branch de master contiene las modificaciones estables del software. </br>
 El branch de debug contiene las ultimas modificaciones, por ende es mas inestable.
 
-/*compile:  g++ -o run main.cpp -IC:\opencv\build\include -LC:\opencv\build\lib -llibopencv_core450 -llibopencv_highgui450 -llibopencv_calib3d450 -llibopencv_core450 -llibopencv_dnn450 -llibopencv_features2d450 -llibopencv_flann450 -llibopencv_gapi450 -llibopencv_highgui450 -llibopencv_imgcodecs450 -llibopencv_imgproc450 -llibopencv_ml450 -llibopencv_objdetect450 -llibopencv_photo450 -llibopencv_stitching450 -llibopencv_video450 -llibopencv_videoio450*/
+/*compile: g++ -o run main.cpp -IC:\opencv\build\include -LC:\opencv\build\lib -llibopencv_core450 -llibopencv_highgui450 -llibopencv_imgcodecs450 -llibopencv_imgproc450 -llibopencv_photo450 -llibopencv_video450 -llibopencv_videoio450*/
 
 <html>
     <head>
