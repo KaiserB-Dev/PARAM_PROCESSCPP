@@ -14,6 +14,36 @@
 
 #define M_PI 3.14159265358979323846
 
+double m(double x1, double x2, double y1, double y2);
+double angle_rect(double m1, double m2);
+double rad_deg(double rad);
+
+
+
+double m(double x1, double x2, double y1, double y2){
+    double m = (x2-x1)/(y2-y1);
+
+    return m;
+}
+
+double angle_rect(double m1, double m2){
+
+    double theta = atan((m2-m1)/(1+(m2*m1)));
+    return theta;
+}
+
+double rad_deg(double rad){
+    double deg;
+    deg = rad*(180/M_PI);
+    return deg;
+}
+
+
+
+
+
+
+
 int main(int argc, char** argv){
 
     const std::string keys_args = "{help h ?   |           | print the help for this program}"
@@ -43,6 +73,7 @@ int main(int argc, char** argv){
     angle_data_name += parser.get<std::string>("file_name");
     angle_data_name += ".csv";
 
+    double m1, m2;
 
 
     std::clock_t start = std::clock();
@@ -108,6 +139,8 @@ int main(int argc, char** argv){
 
         std::vector<std::vector<cv::Point>> PolyAprox(cnts.size());
 
+        //CLUSTERING DE LOS CONTORNOS CALCULADOS CON LOS PUNTOS CONCAVOS
+
         //cv::drawContours(frame, cnts, -1, cv::Scalar(0,0,255));
     
         std::vector<cv::RotatedRect> minEllipse(cnts.size()); //Con los puntos previamente calculados aproxima un rectangulo rotatorio (con el fin de calcular y aproximar la elipse con su respectivo angulo de rotación)
@@ -123,25 +156,48 @@ int main(int argc, char** argv){
         cv::putText(frame, cv::format("Frame: %d/%d", count+1, total_frames), {frame.rows+25, 25}, 1, 2, cv::Scalar(100,0,255),3,8); //Muestra los frames totales y el numero de frame en el que va el video
         cv::putText(frame, cv::format("FPS: %d", fps), {frame.rows+25, 50}, 1, 2, cv::Scalar(100,0,255),3,8); //Muestra los frames por segundo (FPS)
         for(int i=0; i<minEllipse.size(); ++i){
-            if(minEllipse[i].size.area() < 3500 ){ //3500 A
+            if(minEllipse[i].size.area() > 100 ){ //3500 A
                 cv::ellipse(frame, minEllipse[i], cv::Scalar(0,0,255),2);//Pinta la elipse en pantalla
                 cv::putText(frame, cv::format("No. Paramecium: %ld", minEllipse.size()), {10,25}, 1,2, cv::Scalar(0,255,255),3, 8); //Pinta el numero de paramecios totales en pantalla
                 cv::drawMarker(frame, minEllipse[i].center, cv::Scalar(0,0,255), 0,10); // Pinta una cruz en el centro del paramecio
                 double realAngle = minEllipse[i].angle;  
                
-                cv::putText(frame, cv::format("([%.3f, %.3f], %.2f deg)",minEllipse[i].center.x,minEllipse[i].center.y, realAngle) ,
+                cv::putText(frame, cv::format("([%.3f, %.3f], %.2f deg NO. %i)",minEllipse[i].center.x,minEllipse[i].center.y, realAngle, i) ,
                         minEllipse[i].center, 1 ,1.3,cv::Scalar(255,255,100),2, cv::LINE_AA); // Pinta las coordenadas (x,y) y el angulo del paramecio     
             
                 cv::drawContours(frame, PolyAprox, i, cv::Scalar(255,255,0), 2);
-                
+            
 
-                //std::cout<<i<<": "<<PolyAprox[i]<<std::endl; 
+                for(int v=0; v<PolyAprox[0].size(); ++v ){
+                    m1 = m(PolyAprox[i][v].x, PolyAprox[i][v+1].x, PolyAprox[i][v].y, PolyAprox[i][v+1].y);
+                    m2 = m(PolyAprox[i][v+1].x, PolyAprox[i][v+2].x, PolyAprox[i][v+1].y, PolyAprox[i][v+2].y);
+                    
+                    std::cout<<i<<"]M1: "<<v<<": "<<m1<<std::endl;
+                    std::cout<<i<<"]M2: "<<v<<": "<<m2<<std::endl;
+
+                    std::cout<<i<<"]theta: "<<rad_deg(angle_rect(m1, m2))<<std::endl;
+
+                    if(rad_deg(angle_rect(m1, m2))< 180 && rad_deg(angle_rect(m1, m2)) > 0) {
+                        std::cout<<"CONCAVE"<<std::endl;
+                    }else{
+                        std::cout<<"CONVEX"<<std::endl;
+                    }
+
+                }
+                
+                /*
+                for(int v=0; v<PolyAprox[0].size(); ++v ){
+                    std::cout<<v<<": "<<m(PolyAprox[33][v].x, PolyAprox[33][v+1].x, PolyAprox[33][v].y, PolyAprox[33][v+1].y)<<std::endl;
+                }*/
+
+                //std::cout<<"PARAMECIO 33: "<<PolyAprox[33]<<std::endl;
+
 
                 //std::cout<<"CENTROS EN EL "<<count<<" FRAME: "<<minEllipse[i].center<<std::endl;
                 
                 //cv::line(frame, centers[0], centers[1], cv::Scalar(100,200,255), 10, cv::LINE_8, 0);
 
-               /* for(int j=0; j<PolyAprox[i].size(); ++j){
+               /*for(int j=0; j<PolyAprox[i].size(); ++j){
                     std::cout<<i<<": "<<PolyAprox[i][j]<<std::endl;
                 }*/
              
