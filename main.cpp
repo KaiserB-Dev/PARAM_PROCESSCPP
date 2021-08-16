@@ -168,7 +168,7 @@ int main(int argc, char** argv){
                 cv::drawContours(frame, PolyAprox, i, cv::Scalar(255,255,0), 2);
             
 
-                for(int v=0; v<PolyAprox[0].size(); ++v ){
+                for(int v=0; v<PolyAprox[i].size(); ++v ){
                     m1 = m(PolyAprox[i][v].x, PolyAprox[i][v+1].x, PolyAprox[i][v].y, PolyAprox[i][v+1].y);
                     m2 = m(PolyAprox[i][v+1].x, PolyAprox[i][v+2].x, PolyAprox[i][v+1].y, PolyAprox[i][v+2].y);
                     
