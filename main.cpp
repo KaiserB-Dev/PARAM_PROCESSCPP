@@ -134,7 +134,7 @@ int main(int argc, char** argv){
                            
                 cv::circle(frame, minEllipse[i].center, 6, cv::Scalar(0,255,0),2, cv::LINE_8);    
 
-                cv::drawContours(frame, PolyAprox, i, cv::Scalar(255,255,0), 2);
+               cv::drawContours(frame, PolyAprox, i, cv::Scalar(255,255,0), 2);
 
                 
 
