@@ -55,7 +55,7 @@ int main(int argc, char** argv){
     std::ofstream angle(angle_data_name);
     //std::cout<<start<<std::endl;
 
-    cv::namedWindow("MainWindow", cv::WINDOW_NORMAL);
+    cv::namedWindow("MainWindow", cv::WINDOW_GUI_NORMAL);
     cv::namedWindow("GrayWindow", cv::WINDOW_NORMAL);
     cv::namedWindow("NormalizedWindow", cv::WINDOW_NORMAL);
     cv::namedWindow("thWindow", cv::WINDOW_NORMAL);
@@ -66,11 +66,19 @@ int main(int argc, char** argv){
 
     //std::string strCoords;
     std::vector<std::vector<cv::Point>> cnts; //[x,y]
-    video = cv::VideoCapture(cv::samples::findFile(parser.get<std::string>( "@input" ) )); //Carga el input en el objeto video capture (se puede modificar para analizar paramecium en tiempo real con alguna camara como el dinolite)
+     //Carga el input en el objeto video capture (se puede modificar para analizar paramecium en tiempo real con alguna camara como el dinolite) 
+    if(parser.get<std::string>( "@input" ) == "0" || parser.get<std::string>( "@input" ) == "1" || parser.get<std::string>( "@input" ) == "2" ){
+        video = cv::VideoCapture(parser.get<int>( "@input" ));
+    }else{
+        video = cv::VideoCapture(cv::samples::findFile(parser.get<std::string>( "@input" ) ));
+    }
+    
     int total_frames = video.get(cv::CAP_PROP_FRAME_COUNT);
     int fps = video.get(cv::CAP_PROP_FPS);
-
-
+    
+    std::cout<<"FILE: "<<parser.get<std::string>("@input")<<std::endl;
+    std::cout<<"RESOLUTION: "<<"["<<video.get(cv::CAP_PROP_FRAME_HEIGHT)<<"x"<<video.get(cv::CAP_PROP_FRAME_WIDTH)<<"]"<<std::endl;
+    std::cout<<"FPS: "<<fps<< std::endl;  
 
     if(!video.isOpened()){
         std::cout<<"No existe el video solicitado"<<std::endl;
@@ -81,7 +89,7 @@ int main(int argc, char** argv){
     int count = 0;
     while(true){
         video.read(frame);
-        if(frame.empty()) break;   
+        if(frame.empty()) break; 
 
         //preprocessing part
         cv::cvtColor(frame, frameGray, cv::COLOR_BGR2GRAY); //Converción de canal BGR a GRAY
@@ -90,7 +98,7 @@ int main(int argc, char** argv){
         cv::dilate(thFrame, DilFrame, cv::getStructuringElement(cv::MORPH_ELLIPSE,(cv::Size(6,6))));//Dilatación de la imagen con una estructura especificada en tamaño y forma para la operacion morfologica.
         cv::imshow("DWindow", DilFrame);
         //MORPH_ELLIPSE es un elemento estructural eliptico el cual esta inscrito en un rectangulo[x,y,width,heigth].
-        cv::erode(DilFrame, DilFrame, kernel, cv::Point(-1,-1), 2, cv::BORDER_CONSTANT, cv::morphologyDefaultBorderValue()); //Esta parte es la eroción de la imagen previamente dilatada. lo hace con una kernel de unos;
+        cv::erode(DilFrame, DilFrame, kernel, cv::Point(-1,-1), 2, cv::BORDER_CONSTANT, cv::morphologyDefaultBorderValue()); //Esta parte es la erosión de la imagen previamente dilatada. lo hace con una kernel de unos;
         cv::imshow("EWindow", DilFrame);
         //El punto (-1,-1) indica que el punto de ancla de la eroción esta en el centro de cada elemento y este copia el borde original {PENDIENTE cv::morphologyDefaultBorderValue()}
         cv::morphologyEx(DilFrame, DilFrame, cv::MORPH_OPEN, cv::getStructuringElement(cv::MORPH_ELLIPSE,(cv::Size(10,10)))); //Dilata la imagen y luego erosiona la imagen dilatada
