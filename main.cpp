@@ -54,6 +54,8 @@ int main(int argc, char** argv){
     std::string y_data_name = "./data_files/y_";
     std::string angle_data_name = "./data_files/angle_";
 
+
+
     bool isConcave;
 
     if(parser.has("help") || parser.has("?") || parser.has("h")){
@@ -95,7 +97,13 @@ int main(int argc, char** argv){
 
     //std::string strCoords;
     std::vector<std::vector<cv::Point>> cnts; //[x,y]
-    video = cv::VideoCapture(cv::samples::findFile(parser.get<std::string>( "@input" ) )); //Carga el input en el objeto video capture (se puede modificar para analizar paramecium en tiempo real con alguna camara como el dinolite)
+        
+    if(parser.get<std::string>( "@input" ) == "0" || parser.get<std::string>( "@input" ) == "1" || parser.get<std::string>( "@input" ) == "2" ){
+        video = cv::VideoCapture(parser.get<int>( "@input" ));
+    }else{
+        video = cv::VideoCapture(cv::samples::findFile(parser.get<std::string>( "@input" ) ));
+    }
+    
     int total_frames = video.get(cv::CAP_PROP_FRAME_COUNT);
     int fps = video.get(cv::CAP_PROP_FPS);
 
