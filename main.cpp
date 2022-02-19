@@ -4,7 +4,6 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
-//#include <opencv2/ml/ml.hpp>
 #include <iostream>
 #include <vector>
 #include <cmath>
@@ -17,14 +16,15 @@
 int main(int argc, char** argv){
 
     const std::string keys_args = "{help h ?   |           | print the help for this program}"
-                                  "{@input     | stuff.wmv | input video in wmv format}"
-                                  "{fN file_name |default| string for data files }"
-                                  "{delay d    | 1 | set the fps or delay in video}";
+                                  "{@input     |           | input video in wmv format}"
+                                  "{fN file_name |No_Name| string for data files }"
+                                  "{delay d    | 1 | set the fps or delay in video}"
+                                  "{save s |      | set a flag indicate if the program generate a data file  }";
 
     cv::CommandLineParser parser( argc, argv, keys_args ); //Parser para obtener y leer el video desde los argumentos de ejecución del programa
-    std::string x_data_name = "./data_files/x_";
-    std::string y_data_name = "./data_files/y_";
-    std::string angle_data_name = "./data_files/angle_";
+    std::string x_data_name = ".\\data_files\\x_";
+    std::string y_data_name = ".\\data_files\\y_";
+    std::string angle_data_name = ".\\data_files\\angle_";
 
     if(parser.has("help") || parser.has("?") || parser.has("h")){
         parser.printMessage();
@@ -35,7 +35,7 @@ int main(int argc, char** argv){
         parser.printMessage();
         return 0;
     }
-
+    bool hasDataFile = parser.has("s") || parser.has("save") ? true : false;
     x_data_name += parser.get<std::string>("file_name");
     x_data_name += ".csv";
     y_data_name += parser.get<std::string>("file_name");
@@ -49,14 +49,18 @@ int main(int argc, char** argv){
     cv::VideoCapture video;
     cv::Mat frame, frameGray, NormalizeFrame, thFrame, DilFrame, cannyFrame; //Definiendo matrices vacias
     cv::Mat kernel;
-    kernel.ones(cv::Size(10,10), 8);
-    std::ofstream x(x_data_name);
-    std::ofstream y(y_data_name);
-    std::ofstream angle(angle_data_name);
+    kernel.ones(cv::Size(10,10), CV_8UC1);
+
+        std::ofstream x(x_data_name);
+        std::ofstream y(y_data_name);
+        std::ofstream angle(angle_data_name);
+    
+  
+
     //std::cout<<start<<std::endl;
 
-    cv::namedWindow("MainWindow", cv::WINDOW_GUI_NORMAL);
-    cv::namedWindow("GrayWindow", cv::WINDOW_NORMAL);
+    cv::namedWindow("MainWindow", cv::WINDOW_GUI_EXPANDED);
+    cv::namedWindow("GrayWindow", cv::WINDOW_GUI_EXPANDED);
     cv::namedWindow("NormalizedWindow", cv::WINDOW_NORMAL);
     cv::namedWindow("thWindow", cv::WINDOW_NORMAL);
     cv::namedWindow("DWindow", cv::WINDOW_NORMAL);
@@ -79,6 +83,23 @@ int main(int argc, char** argv){
     std::cout<<"FILE: "<<parser.get<std::string>("@input")<<std::endl;
     std::cout<<"RESOLUTION: "<<"["<<video.get(cv::CAP_PROP_FRAME_HEIGHT)<<"x"<<video.get(cv::CAP_PROP_FRAME_WIDTH)<<"]"<<std::endl;
     std::cout<<"FPS: "<<fps<< std::endl;  
+    if(!hasDataFile){
+        x.close();
+        y.close();
+        angle.close();
+        std::cout<<"SAVE MODE: OFF \n";
+        std::string global_inst("del /f ");
+        std::string instruccionx, instrucciony, instruccionangle;
+        instruccionx = global_inst + x_data_name;
+        instrucciony = global_inst + y_data_name;
+        instruccionangle = global_inst + angle_data_name;
+        std::system(instruccionx.c_str());
+        std::system(instrucciony.c_str());
+        std::system(instruccionangle.c_str());
+     
+    }else{
+        std::cout<<"SAVE MODE: ON \n";
+    }
 
     if(!video.isOpened()){
         std::cout<<"No existe el video solicitado"<<std::endl;
@@ -137,8 +158,7 @@ int main(int argc, char** argv){
                 double realAngle = minEllipse[i].angle;  
                
                 cv::putText(frame, cv::format("([%.3f, %.3f], %.2f deg)",minEllipse[i].center.x,minEllipse[i].center.y, realAngle) ,
-                        minEllipse[i].center, 1 ,1.3,cv::Scalar(255,255,100),2, cv::LINE_AA); // Pinta las coordenadas (x,y) y el angulo del paramecio     
-            
+                        minEllipse[i].center, 1 ,1.3,cv::Scalar(255,255,100),2, cv::LINE_AA); // Pinta las coordenadas (x,y) y el angulo del paramecio   
                            
                 cv::circle(frame, minEllipse[i].center, 6, cv::Scalar(0,255,0),2, cv::LINE_8);    
 
@@ -167,10 +187,12 @@ int main(int argc, char** argv){
             
 
                 //std::cout<<minEllipse[i].size.area()<<std::endl;
-
+            if(hasDataFile){
                 x<<minEllipse[i].center.x<<",";
                 y<<minEllipse[i].center.y<<",";
                 angle<<realAngle<<",";
+            }
+             
 
             
 
@@ -196,9 +218,11 @@ int main(int argc, char** argv){
         if(cv::waitKey(parser.get<int>("delay")) == 27){ //condicion de paro del video, si se aprieta la tecla esc para el video
             break;
         }
-        x<<"\n";
-        y<<"\n";
-        angle<<"\n";
+        if(hasDataFile){
+            x<<"\n";
+            y<<"\n";
+            angle<<"\n";
+        }
         
         ++count; //contador de frames
     }

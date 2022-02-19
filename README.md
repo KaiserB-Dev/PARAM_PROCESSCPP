@@ -3,7 +3,7 @@
 El branch de master contiene las modificaciones estables del software. </br>
 El branch de debug contiene las ultimas modificaciones, por ende es mas inestable.
 
-/*compile:  g++ -o run main.cpp -IC:\opencv\build\include -LC:\opencv\build\lib -llibopencv_core450 -llibopencv_highgui450 -llibopencv_calib3d450 -llibopencv_core450 -llibopencv_dnn450 -llibopencv_features2d450 -llibopencv_flann450 -llibopencv_gapi450 -llibopencv_highgui450 -llibopencv_imgcodecs450 -llibopencv_imgproc450 -llibopencv_ml450 -llibopencv_objdetect450 -llibopencv_photo450 -llibopencv_stitching450 -llibopencv_video450 -llibopencv_videoio450*/
+/*compile: g++ -o run main.cpp -ID:\PROGRAMAS\opencv\build\include -LD:\PROGRAMAS\opencv\build\bin -llibopencv_core450 -llibopencv_highgui450 -llibopencv_imgcodecs450 -llibopencv_imgproc450 -llibopencv_photo450 -llibopencv_video450 -llibopencv_videoio450*/
 
 <html>
     <head>
@@ -37,14 +37,16 @@ El branch de debug contiene las ultimas modificaciones, por ende es mas inestabl
             </ul>
         <h2>  Compilación y ejecución del programa  </h2>
         Compilación: <i>./compile.bat</i> <b>NOTA: En este script puede variar en donde esta instalado opencv, el parametro I y el parametro L se debe de poner la ruta respectiva de tanto los includes como los lib <i>(-I{extract_directory}/opencv/build/include && -L{extract_directory}/opencv/build/lib )</i></b> </br> </br>
-        <b>Ejecución: <i>Usage: run.exe [params] input </br>
-        -?, -h, --help (value:true)</br>
+        <b>Ejecución: <i>Usage: run.exe input [params]</br>
+        -?, -h, --help</br>
                 print the help for this program</br>
         -d, --delay (value:1)</br>
                 set the fps or delay in video</br>
-        --fN, --file_name (value:default)</br>
+        --fN, --file_name (value:No_Name)</br>
                 string for data files</br>
-        input (value:stuff.wmv)</br>
+        -s, --save </br>
+            set a flag indicate if the program generate a data file</br>
+        input</br>
                 input video in wmv format</i></b></br>
         <h1>COMO COMPILAR OPENCV</h1>
         <h2>  Prerrequisitos  </h2>

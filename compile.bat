@@ -1,1 +1,1 @@
-g++ -o run main.cpp -IC:\opencv\build\include -LC:\opencv\build\lib -llibopencv_core450 -llibopencv_highgui450 -llibopencv_imgcodecs450 -llibopencv_imgproc450 -llibopencv_photo450 -llibopencv_video450 -llibopencv_videoio450
+g++ -o run main.cpp -ID:\PROGRAMAS\opencv\build\include -LD:\PROGRAMAS\opencv\build\bin -llibopencv_core450 -llibopencv_highgui450 -llibopencv_imgcodecs450 -llibopencv_imgproc450 -llibopencv_photo450 -llibopencv_video450 -llibopencv_videoio450
